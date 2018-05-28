@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "816049901510",
+    "firebase_url": "https://gatesalemonginis.firebaseio.com",
+    "project_id": "gatesalemonginis",
+    "storage_bucket": "gatesalemonginis.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:816049901510:android:0e272f3ff2701526",
+        "android_client_info": {
+          "package_name": "com.ats.gate_sale_monginis"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "816049901510-s2tfmai9r7b90812ufn3eanpjngle81m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ats.gate_sale_monginis",
+            "certificate_hash": "be4b72f6c18a6958be3b2061e0c7c55f5a74c7b8"
+          }
+        },
+        {
+          "client_id": "816049901510-3gcfrdcmbmqv4n11tdlprenf57fcfcbk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGieE_pmSJHfLwX9_hJudydAudMaQPgwY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "816049901510-3gcfrdcmbmqv4n11tdlprenf57fcfcbk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

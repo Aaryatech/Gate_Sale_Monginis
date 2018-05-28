@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".activity.PrinterSettingsActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:fontFamily="@font/sofiapro_bold"
+        android:gravity="center"
+        android:text="Printer Settings"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/edPrinterIP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:background="@android:drawable/editbox_background_normal"
+        android:digits="0123456789."
+        android:gravity="center"
+        android:hint="Printer IP"
+        android:inputType="numberDecimal"
+        android:maxLines="1"
+        android:padding="13dp"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/edPort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:background="@android:drawable/editbox_background_normal"
+        android:editable="false"
+        android:gravity="center"
+        android:hint="Port"
+        android:inputType="none"
+        android:maxLength="4"
+        android:maxLines="1"
+        android:padding="13dp"
+        android:singleLine="true"
+        android:text="9100" />
+
+
+    <Button
+        android:id="@+id/btnPrinterSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:background="@color/colorAccent"
+        android:fontFamily="@font/sofiapro_bold"
+        android:text="Save"
+        android:textColor="@color/colorWhite" />
+
+    <Button
+        android:id="@+id/btnPrinterTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:background="@color/colorAccent"
+        android:fontFamily="@font/sofiapro_bold"
+        android:text="  Test Print  "
+        android:textColor="@color/colorWhite" />
+
+
+    <Button
+        android:id="@+id/btnAdvance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:background="@color/colorAccent"
+        android:fontFamily="@font/sofiapro_bold"
+        android:text="  Advance  "
+        android:textColor="@color/colorWhite" />
+
+</LinearLayout>
+
+

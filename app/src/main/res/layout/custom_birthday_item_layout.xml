@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:elevation="2dp"
+    app:cardBackgroundColor="@color/colorWhite"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:id="@+id/ivCustomBirthdayItem_Image"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:id="@+id/tvCustomBirthdayItem_Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:fontFamily="@font/sofiapro_light"
+            android:lines="2"
+            android:maxLines="2"
+            android:text="Product"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvCustomBirthdayItem_Add"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:fontFamily="@font/sofiapro_light"
+            android:gravity="center_horizontal"
+            android:maxLines="1"
+            android:padding="5dp"
+            android:text=" Add "
+            android:textColor="@color/colorWhite" />
+
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>
