@@ -8,7 +8,6 @@
         android:visible="false"
         app:showAsAction="never" />
 
-
     <item
         android:id="@+id/action_Filter"
         android:icon="@mipmap/ic_filter"

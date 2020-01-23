@@ -4,14 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     android:background="@color/colorWhite"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context=".activity.PrintReceiptActivity">
 
     <pl.droidsonroids.gif.GifImageView
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/print" />
+
+    <Button
+        android:id="@+id/btnPrint"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/print"/>
+        android:background="@color/colorAccent"
+        android:text="Print"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold" />
 
 </LinearLayout>

@@ -30,6 +30,7 @@ public class BillHeaderListData {
     private int delStatus;
     private String invoiceNo;
     private String userName;
+    private boolean rejected;
 
     List<GateSaleBillDetailList> gateSaleBillDetailList;
 
@@ -217,6 +218,14 @@ public class BillHeaderListData {
         this.userName = userName;
     }
 
+    public boolean isRejected() {
+        return rejected;
+    }
+
+    public void setRejected(boolean rejected) {
+        this.rejected = rejected;
+    }
+
     @Override
     public String toString() {
         return "BillHeaderListData{" +
@@ -242,6 +251,7 @@ public class BillHeaderListData {
                 ", delStatus=" + delStatus +
                 ", invoiceNo='" + invoiceNo + '\'' +
                 ", userName='" + userName + '\'' +
+                ", rejected=" + rejected +
                 ", gateSaleBillDetailList=" + gateSaleBillDetailList +
                 '}';
     }

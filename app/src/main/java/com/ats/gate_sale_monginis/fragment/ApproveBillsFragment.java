@@ -388,7 +388,7 @@ public class ApproveBillsFragment extends Fragment implements ApprovedBillInterf
     }
 
 
-    public class showDateDialog extends Dialog {
+        public class showDateDialog extends Dialog {
 
         EditText edFromDate, edToDate;
         TextView tvFromDate, tvToDate;

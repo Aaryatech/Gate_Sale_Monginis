@@ -182,7 +182,7 @@ public class EmployeeProductsAdapter extends BaseAdapter implements Filterable {
         Picasso.with(context)
                 .load(imagePath)
                 .placeholder(android.R.color.transparent)
-                .error(R.drawable.no_image)
+                .error(R.drawable.logo)
                 .into(holder.ivImage);
 
 

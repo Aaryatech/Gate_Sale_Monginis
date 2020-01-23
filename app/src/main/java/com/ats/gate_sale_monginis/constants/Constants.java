@@ -25,6 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Constants {
 
     public static final String MY_PREF = "GateSale";
+    public static final String PRINTER_PREF = "Printer";
 
     public static final String IMAGE_PATH = "http://132.148.151.41:8080/uploads/ITEM/";
 
@@ -56,13 +57,11 @@ public class Constants {
             .writeTimeout(10000, TimeUnit.SECONDS)
             .build();
 
-
     public static Retrofit retrofit = new Retrofit.Builder()
-            //.baseUrl("http://192.168.1.7:8098/")
+            //.baseUrl("http://192.168.2.16:8091/")
             .baseUrl("http://132.148.151.41:8080/webapi/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create()).build();
-
 
     public static InterfaceApi myInterface = retrofit.create(InterfaceApi.class);
 

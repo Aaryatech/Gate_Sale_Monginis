@@ -57,8 +57,12 @@ public interface InterfaceApi {
     @GET("gatesale/getGateEmpList")
     Call<EmployeeListData> getEmployeeList();
 
-    @POST("getItemsByCatId")
+//    @POST("getItemsByCatId")
+//    Call<ArrayList<Item>> getItemsByCategory(@Query("itemGrp1") int itemGrp1);
+
+    @POST("getItemsByCatIdForGateSale")
     Call<ArrayList<Item>> getItemsByCategory(@Query("itemGrp1") int itemGrp1);
+
 
     @POST("gatesale/saveGateSaleBill")
     Call<ErrorMessage> saveBill(@Body GateSaleBillHeader gateSaleBillHeader);
@@ -110,6 +114,9 @@ public interface InterfaceApi {
 
     @POST("gatesale/gateBillHeaderAndDetailsByInitiator")
     Call<ArrayList<BillHeaderListData>> getInitiatorBillData(@Query("fromDate") String fromDate, @Query("toDate") String toDate, @Query("isApproved") int isApproved, @Query("initiatorUserId") int initiatorUserId);
+
+    @POST("gatesale/deleteGateSaleBill")
+    Call<ErrorMessage> deleteRejectedBill(@Query("billIdList") ArrayList<Integer> billIdList);
 
 
     //Approver : 8793338336 --->123456

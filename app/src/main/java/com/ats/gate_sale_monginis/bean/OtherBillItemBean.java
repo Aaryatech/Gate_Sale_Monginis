@@ -11,33 +11,12 @@ public class OtherBillItemBean {
     private int itemId;
     private String itemName;
     private String itemQty;
-    private int qty;
+    private float qty;
     private float perItemRate;
     private float rate;
     private int discount;
 
-    public OtherBillItemBean(int vendorId, String vendorName, int itemId, String itemName, String itemQty, int qty, float rate) {
-        this.vendorId = vendorId;
-        this.vendorName = vendorName;
-        this.itemId = itemId;
-        this.itemName = itemName;
-        this.itemQty = itemQty;
-        this.qty = qty;
-        this.rate = rate;
-    }
-
-    public OtherBillItemBean(int vendorId, String vendorName, int itemId, String itemName, String itemQty, int qty, float rate, int discount) {
-        this.vendorId = vendorId;
-        this.vendorName = vendorName;
-        this.itemId = itemId;
-        this.itemName = itemName;
-        this.itemQty = itemQty;
-        this.qty = qty;
-        this.rate = rate;
-        this.discount = discount;
-    }
-
-    public OtherBillItemBean(int vendorId, String vendorName, int itemId, String itemName, String itemQty, int qty, float perItemRate, float rate, int discount) {
+    public OtherBillItemBean(int vendorId, String vendorName, int itemId, String itemName, String itemQty, float qty, float perItemRate, float rate, int discount) {
         this.vendorId = vendorId;
         this.vendorName = vendorName;
         this.itemId = itemId;
@@ -48,6 +27,7 @@ public class OtherBillItemBean {
         this.rate = rate;
         this.discount = discount;
     }
+
 
     public float getPerItemRate() {
         return perItemRate;
@@ -97,11 +77,11 @@ public class OtherBillItemBean {
         this.itemQty = itemQty;
     }
 
-    public int getQty() {
+    public float getQty() {
         return qty;
     }
 
-    public void setQty(int qty) {
+    public void setQty(float qty) {
         this.qty = qty;
     }
 

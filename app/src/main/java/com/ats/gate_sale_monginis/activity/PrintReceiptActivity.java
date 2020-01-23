@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.ats.gate_sale_monginis.R;
@@ -33,6 +35,8 @@ public class PrintReceiptActivity extends AppCompatActivity implements IOCallBac
     int port;
     BillHeaderListData billHeaderListData = new BillHeaderListData();
 
+    private Button btnPrint;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +45,20 @@ public class PrintReceiptActivity extends AppCompatActivity implements IOCallBac
 
         mActivity = this;
 
+        btnPrint=findViewById(R.id.btnPrint);
+
         if (PermissionUtil.checkAndRequestPermissions(this)) {
 
         }
 
         try {
-            SharedPreferences pref = getSharedPreferences(Constants.MY_PREF, MODE_PRIVATE);
-            SharedPreferences.Editor editor = pref.edit();
+            SharedPreferences pref = getSharedPreferences(Constants.PRINTER_PREF, MODE_PRIVATE);
             ip = pref.getString("IP", "");
             port = pref.getInt("Port", 9100);
 
         } catch (Exception e) {
+            Log.e("IP : ","*********************** "+ip);
+            e.printStackTrace();
         }
 
         try {
@@ -70,9 +77,18 @@ public class PrintReceiptActivity extends AppCompatActivity implements IOCallBac
         mPos.Set(mNet);
         mNet.SetCallBack(this);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        es.submit(new TaskOpen(mNet, ip, port, mActivity));
+      //  es.submit(new TaskOpen(mNet, ip, port, mActivity));
+
+
+        btnPrint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                es.submit(new TaskOpen(mNet, ip, port, mActivity));
+            }
+        });
+
     }
 
     public class TaskOpen implements Runnable {
@@ -105,14 +121,13 @@ public class PrintReceiptActivity extends AppCompatActivity implements IOCallBac
 
         @Override
         public void run() {
-            // TODO Auto-generated method stub
 
             final int bPrintResult = Prints.PrintReceipt(getApplicationContext(), mPos, Constants.nPrintCount, Constants.nPrintContent, billHeaderListData);
-            finish();
+           // finish();
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    // TODO Auto-generated method stub
+                    Log.e("RESULT : ","-----------------"+bPrintResult);
                     // Toast.makeText(mActivity.getApplicationContext(), (bPrintResult == 0) ? getResources().getString(R.string.printsuccess) : getResources().getString(R.string.printfailed) + " " + Prints.ResultCodeToString(bPrintResult), Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -127,8 +142,6 @@ public class PrintReceiptActivity extends AppCompatActivity implements IOCallBac
             @Override
             public void run() {
                 Log.e("OnOpen", "-----Connected");
-                //Toast.makeText(PrintReceiptActivity.this, "Connected", Toast.LENGTH_SHORT).show();
-
                 try {
                     es.submit(new TaskPrint(mPos));
                 } catch (Exception e) {
@@ -184,10 +197,4 @@ public class PrintReceiptActivity extends AppCompatActivity implements IOCallBac
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.e("onDestroy", "---------------------------");
-        es.submit(new TaskClose(mNet));
-    }
 }

@@ -408,7 +408,7 @@ public class Prints {
         Gson gson = new Gson();
         String json2 = pref.getString("loginData", "");
         LoginData userBean = gson.fromJson(json2, LoginData.class);
-        Log.e("User Bean : ", "---------------" + userBean);
+        Log.e("User Bean : ", "-------*--*--*--------" + userBean);
         try {
 
             if (userBean != null) {

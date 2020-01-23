@@ -1,6 +1,7 @@
 package com.ats.gate_sale_monginis.fragment;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -23,7 +24,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -43,7 +47,9 @@ import com.ats.gate_sale_monginis.bean.GateSaleBillHeader;
 import com.ats.gate_sale_monginis.bean.GateSaleUserList;
 import com.ats.gate_sale_monginis.bean.LoginData;
 import com.ats.gate_sale_monginis.bean.OtherBillItemBean;
+import com.ats.gate_sale_monginis.bean.OtherItemList;
 import com.ats.gate_sale_monginis.bean.OtherItemListData;
+import com.ats.gate_sale_monginis.bean.OtherSupplierList;
 import com.ats.gate_sale_monginis.bean.SupplierListData;
 import com.ats.gate_sale_monginis.common.CommonDialog;
 import com.ats.gate_sale_monginis.constants.Constants;
@@ -66,9 +72,9 @@ import static com.ats.gate_sale_monginis.activity.HomeActivity.tvTitle;
 
 public class OtherBillsFragment extends Fragment implements View.OnClickListener {
 
-    private EditText edVendorname, edQty, edRate;
+    private EditText edVendorname, edQty, edRate, edVendor, edItem;
     private Spinner spCategory, spVendor;
-    private TextView tvSubmit, tvAdd, tvTotal;
+    private TextView tvSubmit, tvAdd, tvTotal, tvVendorId, tvItemId, tvItemQty, tvItemRate;
 
     private ListView lvBillList;
 
@@ -76,11 +82,13 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
 
     private ArrayList<String> supplierNameArray = new ArrayList<>();
     private ArrayList<Integer> supplierIdArray = new ArrayList<>();
+    private ArrayList<OtherSupplierList> supplierArray = new ArrayList<>();
 
     private ArrayList<String> itemNameArray = new ArrayList<>();
     private ArrayList<Integer> itemIdArray = new ArrayList<>();
     private ArrayList<String> itemQtyArray = new ArrayList<>();
     private ArrayList<Float> itemRateArray = new ArrayList<>();
+    private ArrayList<OtherItemList> itemArray = new ArrayList<>();
 
     ArrayAdapter<String> supplierAdapter;
     ArrayAdapter<String> itemAdapter;
@@ -89,6 +97,10 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
 
     OtherBillAdapter adapter;
 
+    Dialog dialog;
+    VendorDataAdapter dataAdapter;
+    ItemDataAdapter itemDataAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,6 +108,16 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
         tvTitle.setText("Other Bills");
 
         // getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        edVendor = view.findViewById(R.id.edVendor);
+        edItem = view.findViewById(R.id.edItem);
+        tvVendorId = view.findViewById(R.id.tvVendorId);
+        tvItemId = view.findViewById(R.id.tvItemId);
+        tvItemQty = view.findViewById(R.id.tvItemQty);
+        tvItemRate = view.findViewById(R.id.tvItemRate);
+
+        edVendor.setOnClickListener(this);
+        edItem.setOnClickListener(this);
 
         edVendorname = view.findViewById(R.id.edOtherBills_VendorName);
         edQty = view.findViewById(R.id.edOtherBills_Qty);
@@ -154,8 +176,9 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 try {
-                    int qty = Integer.parseInt(charSequence.toString());
-                    float amt = itemRateArray.get(spCategory.getSelectedItemPosition());
+                    float qty = Float.parseFloat(charSequence.toString());
+                    // float amt = itemRateArray.get(spCategory.getSelectedItemPosition());
+                    float amt = Float.parseFloat(tvItemRate.getText().toString());
                     float rate = amt * qty;
                     edRate.setText("" + rate);
 
@@ -198,7 +221,7 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 try {
                     if (i != 0) {
-                        edRate.setText("" + itemRateArray.get(i));
+                        edRate.setText("" + tvItemRate.getText().toString());
                         edQty.setText("1");
                     } else {
                         edRate.setText("0");
@@ -221,22 +244,33 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.tvOtherBills_Add) {
-            if (spVendor.getSelectedItemPosition() == 0) {
+            /*if (spVendor.getSelectedItemPosition() == 0) {
                 Toast.makeText(getActivity(), "Please Select Vendor", Toast.LENGTH_SHORT).show();
                 spVendor.requestFocus();
             } else if (spCategory.getSelectedItemPosition() == 0) {
                 Toast.makeText(getActivity(), "Please Select Item", Toast.LENGTH_SHORT).show();
                 spVendor.requestFocus();
+            }*/
+            if (tvVendorId.getText().toString().isEmpty()) {
+                Toast.makeText(getActivity(), "Please Select Vendor", Toast.LENGTH_SHORT).show();
+            } else if (tvItemId.getText().toString().isEmpty()) {
+                Toast.makeText(getActivity(), "Please Select Item", Toast.LENGTH_SHORT).show();
             } else {
 
-                String itemName = spCategory.getSelectedItem().toString();
-                int itemId = itemIdArray.get(spCategory.getSelectedItemPosition());
-                String vendor = spVendor.getSelectedItem().toString();
-                int vendorId = supplierIdArray.get(spVendor.getSelectedItemPosition());
-                int qty = Integer.parseInt(edQty.getText().toString());
+//                String itemName = spCategory.getSelectedItem().toString();
+//                int itemId = itemIdArray.get(spCategory.getSelectedItemPosition());
+//                String vendor = spVendor.getSelectedItem().toString();
+//                int vendorId = supplierIdArray.get(spVendor.getSelectedItemPosition());
+                //int qty = Integer.parseInt(edQty.getText().toString());
+                float qty = Float.parseFloat(edQty.getText().toString());
                 float rate = Float.parseFloat(edRate.getText().toString());
                 float perItemRate = itemRateArray.get(spCategory.getSelectedItemPosition());
 
+                String vendor = edVendor.getText().toString();
+                int vendorId = Integer.parseInt(tvVendorId.getText().toString());
+
+                String itemName = edItem.getText().toString();
+                int itemId = Integer.parseInt(tvItemId.getText().toString());
 
                 OtherBillItemBean
                         bean = new OtherBillItemBean(vendorId, vendor, itemId, itemName, "", qty, perItemRate, rate, 0);
@@ -274,9 +308,17 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
                 adapter.notifyDataSetChanged();
 
                 spCategory.setSelection(0);
-                edRate.setText("0");
-                spVendor.setEnabled(false);
+                edRate.setText("");
+                edQty.setText("");
 
+                edItem.setText("");
+                tvItemId.setText("");
+                tvItemRate.setText("");
+
+                edItem.requestFocus();
+
+                spVendor.setEnabled(false);
+                edVendor.setEnabled(false);
             }
 
 
@@ -284,8 +326,12 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
 
             if (billItemsArray.size() > 0) {
 
-                String vendor = spVendor.getSelectedItem().toString();
-                int vendorId = supplierIdArray.get(spVendor.getSelectedItemPosition());
+                //String vendor = spVendor.getSelectedItem().toString();
+                String vendor = billItemsArray.get(0).getVendorName();
+
+               // int vendorId = supplierIdArray.get(spVendor.getSelectedItemPosition());
+                int vendorId = billItemsArray.get(0).getVendorId();
+
                 float total = Float.parseFloat(tvTotal.getText().toString());
 
                 ArrayList<GateSaleBillDetail> itemArray = new ArrayList<>();
@@ -294,6 +340,7 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
                     itemArray.add(billDetail);
                 }
 
+                Log.e("VENDOR NAME : ","--------------"+vendor);
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                 String todaysDate = sdf.format(Calendar.getInstance().getTimeInMillis());
@@ -311,6 +358,10 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
             }
 
 
+        } else if (view.getId() == R.id.edVendor) {
+            showVendorDialog(supplierArray);
+        } else if (view.getId() == R.id.edItem) {
+            showItemDialog(itemArray);
         }
 
 
@@ -337,8 +388,12 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
                                 //Log.e("User : ", " ERROR : " + data.getErrorMessage().getError());
                             } else {
                                 commonDialog.dismiss();
+                                supplierArray.clear();
                                 supplierNameArray.clear();
                                 supplierIdArray.clear();
+
+                                supplierArray = (ArrayList<OtherSupplierList>) data.getOtherSupplierList();
+
                                 supplierNameArray.add("Select Supplier");
                                 supplierIdArray.add(0);
                                 for (int i = 0; i < data.getOtherSupplierList().size(); i++) {
@@ -374,7 +429,6 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
         }
     }
 
-
     public void getItemList(int suppId) {
 
         if (Constants.isOnline(getContext())) {
@@ -395,10 +449,16 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
                                 //Log.e("User : ", " ERROR : " + data.getErrorMessage().getError());
                             } else {
                                 commonDialog.dismiss();
+                                itemArray.clear();
                                 itemNameArray.clear();
                                 itemIdArray.clear();
                                 itemQtyArray.clear();
                                 itemRateArray.clear();
+
+                                itemArray = (ArrayList<OtherItemList>) data.getOtherItemList();
+                                Log.e("ITEM ARRAY : ", "----------------------------" + itemArray);
+
+
                                 itemNameArray.add("Select Item");
                                 itemIdArray.add(0);
                                 itemQtyArray.add("0");
@@ -608,6 +668,286 @@ public class OtherBillsFragment extends Fragment implements View.OnClickListener
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
+    }
+
+
+    public void showVendorDialog(ArrayList<OtherSupplierList> supplierArray) {
+
+        dialog = new Dialog(getContext(), android.R.style.Theme_Light_NoTitleBar);
+        LayoutInflater li = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = li.inflate(R.layout.dialog_search_layout, null, false);
+        dialog.setContentView(v);
+        dialog.setCancelable(true);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        ListView list1 = dialog.findViewById(R.id.listView);
+        dataAdapter = new VendorDataAdapter(getActivity().getApplicationContext(), supplierArray);
+        list1.setAdapter(dataAdapter);
+
+
+        EditText edSearch = dialog.findViewById(R.id.edSearch);
+        edSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (dataAdapter != null)
+                    dataAdapter.getFilter().filter(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        dialog.show();
+    }
+
+    public void showItemDialog(ArrayList<OtherItemList> itemArray) {
+
+        dialog = new Dialog(getContext(), android.R.style.Theme_Light_NoTitleBar);
+        LayoutInflater li = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = li.inflate(R.layout.dialog_search_layout, null, false);
+        dialog.setContentView(v);
+        dialog.setCancelable(true);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        ListView list1 = dialog.findViewById(R.id.listView);
+        itemDataAdapter = new ItemDataAdapter(getActivity().getApplicationContext(), itemArray);
+        list1.setAdapter(itemDataAdapter);
+
+
+        EditText edSearch = dialog.findViewById(R.id.edSearch);
+        edSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (itemDataAdapter != null)
+                    itemDataAdapter.getFilter().filter(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        dialog.show();
+    }
+
+
+    public class VendorDataAdapter extends BaseAdapter implements Filterable {
+
+        private ArrayList<OtherSupplierList> originalValues;
+        private ArrayList<OtherSupplierList> displayedValues;
+        LayoutInflater inflater;
+        String type;
+
+        public VendorDataAdapter(Context context, ArrayList<OtherSupplierList> arrayList) {
+            this.originalValues = arrayList;
+            this.displayedValues = arrayList;
+            inflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount() {
+            return displayedValues.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return i;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        public class ViewHolder {
+            TextView tvName;
+            LinearLayout llBack;
+        }
+
+        @Override
+        public View getView(final int position, View v, ViewGroup parent) {
+            ViewHolder holder = null;
+
+            if (v == null) {
+                v = inflater.inflate(R.layout.adapter_data, null);
+                holder = new ViewHolder();
+                holder.tvName = v.findViewById(R.id.tvName);
+                holder.llBack = v.findViewById(R.id.llCustomSearch_back);
+                v.setTag(holder);
+            } else {
+                holder = (ViewHolder) v.getTag();
+            }
+
+            holder.tvName.setText("" + displayedValues.get(position).getSuppName());
+
+            holder.llBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    edVendor.setText("" + displayedValues.get(position).getSuppName());
+                    tvVendorId.setText("" + displayedValues.get(position).getSuppId());
+
+                }
+            });
+
+            return v;
+        }
+
+        @Override
+        public Filter getFilter() {
+            Filter filter = new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    FilterResults results = new FilterResults();
+                    ArrayList<OtherSupplierList> filteredArrayList = new ArrayList<>();
+                    if (originalValues == null) {
+                        originalValues = new ArrayList<>(displayedValues);
+                    }
+
+                    if (charSequence == null || charSequence.length() == 0) {
+                        results.count = originalValues.size();
+                        results.values = originalValues;
+                    } else {
+                        charSequence = charSequence.toString().toLowerCase();
+                        for (int i = 0; i < originalValues.size(); i++) {
+                            String name = originalValues.get(i).getSuppName();
+                            if (name.toLowerCase().startsWith(charSequence.toString()) || name.contains(charSequence.toString())) {
+                                filteredArrayList.add(new OtherSupplierList(originalValues.get(i).getSuppId(), originalValues.get(i).getSuppName(), originalValues.get(i).getSuppAddr(), originalValues.get(i).getSuppMob(), originalValues.get(i).getDelStatus()));
+                            }
+                        }
+                        results.count = filteredArrayList.size();
+                        results.values = filteredArrayList;
+                    }
+
+                    return results;
+                }
+
+                @Override
+                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                    displayedValues = (ArrayList<OtherSupplierList>) filterResults.values;
+                    notifyDataSetChanged();
+                }
+            };
+
+            return filter;
+        }
+    }
+
+
+    public class ItemDataAdapter extends BaseAdapter implements Filterable {
+
+        private ArrayList<OtherItemList> originalValues;
+        private ArrayList<OtherItemList> displayedValues;
+        LayoutInflater inflater;
+
+        public ItemDataAdapter(Context context, ArrayList<OtherItemList> arrayList) {
+            this.originalValues = arrayList;
+            this.displayedValues = arrayList;
+            inflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount() {
+            return displayedValues.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return i;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        public class ViewHolder {
+            TextView tvName;
+            LinearLayout llBack;
+        }
+
+        @Override
+        public View getView(final int position, View v, ViewGroup parent) {
+            ViewHolder holder = null;
+
+            if (v == null) {
+                v = inflater.inflate(R.layout.adapter_data, null);
+                holder = new ViewHolder();
+                holder.tvName = v.findViewById(R.id.tvName);
+                holder.llBack = v.findViewById(R.id.llCustomSearch_back);
+                v.setTag(holder);
+            } else {
+                holder = (ViewHolder) v.getTag();
+            }
+
+            holder.tvName.setText("" + displayedValues.get(position).getItemName());
+
+            holder.llBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    edItem.setText("" + displayedValues.get(position).getItemName());
+                    tvItemId.setText("" + displayedValues.get(position).getItemId());
+                    tvItemRate.setText("" + displayedValues.get(position).getItemRate());
+                    edRate.setText("" + displayedValues.get(position).getItemRate());
+                    edQty.setText("1");
+                }
+            });
+
+            return v;
+        }
+
+        @Override
+        public Filter getFilter() {
+            Filter filter = new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    FilterResults results = new FilterResults();
+                    ArrayList<OtherItemList> filteredArrayList = new ArrayList<>();
+                    if (originalValues == null) {
+                        originalValues = new ArrayList<>(displayedValues);
+                    }
+
+                    if (charSequence == null || charSequence.length() == 0) {
+                        results.count = originalValues.size();
+                        results.values = originalValues;
+                    } else {
+                        charSequence = charSequence.toString().toLowerCase();
+                        for (int i = 0; i < originalValues.size(); i++) {
+                            String name = originalValues.get(i).getItemName();
+                            if (name.toLowerCase().startsWith(charSequence.toString()) || name.contains(charSequence.toString())) {
+                                filteredArrayList.add(new OtherItemList(originalValues.get(i).getItemId(), originalValues.get(i).getSuppId(), originalValues.get(i).getItemName(), originalValues.get(i).getItemQty(), originalValues.get(i).getItemRate(), originalValues.get(i).getDelStatus()));
+                            }
+                        }
+                        results.count = filteredArrayList.size();
+                        results.values = filteredArrayList;
+                    }
+
+                    return results;
+                }
+
+                @Override
+                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                    displayedValues = (ArrayList<OtherItemList>) filterResults.values;
+                    notifyDataSetChanged();
+                }
+            };
+
+            return filter;
+        }
     }
 
 

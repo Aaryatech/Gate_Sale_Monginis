@@ -91,7 +91,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -106,7 +105,6 @@
                         android:fontFamily="@font/sofiapro_light"
                         android:hint="Vendor Name"
                         android:maxLines="1" />
-
                 </android.support.design.widget.TextInputLayout>
 
                 <TextView
@@ -115,17 +113,38 @@
                     android:layout_marginLeft="7dp"
                     android:fontFamily="@font/sofiapro_light"
                     android:text="Select Vendor"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/edVendor"
+                        android:editable="false"
+                        android:inputType="none"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:hint="Select Vendor" />
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tvVendorId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
 
                 <Spinner
                     android:id="@+id/spOtherBills_Vendor"
                     style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:spinnerMode="dropdown" />
-
+                    android:spinnerMode="dropdown"
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -134,7 +153,41 @@
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/sofiapro_light"
                     android:text="Select Item"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:editable="false"
+                        android:inputType="none"
+                        android:id="@+id/edItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:hint="Select Item" />
+                </android.support.design.widget.TextInputLayout>
+
+                              <TextView
+                    android:id="@+id/tvItemId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvItemQty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvItemRate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
 
                 <Spinner
                     android:id="@+id/spOtherBills_Category"
@@ -143,7 +196,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:spinnerMode="dropdown" />
+                    android:spinnerMode="dropdown"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -165,7 +219,7 @@
                             android:background="@android:drawable/editbox_background_normal"
                             android:fontFamily="@font/sofiapro_light"
                             android:hint="Quantity"
-                            android:inputType="number"
+                            android:inputType="numberDecimal"
                             android:maxLines="1" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -183,6 +237,7 @@
                             android:background="@android:drawable/editbox_background_normal"
                             android:fontFamily="@font/sofiapro_light"
                             android:hint="Rate"
+                            android:editable="false"
                             android:inputType="none"
                             android:maxLines="1"
                             android:singleLine="true" />

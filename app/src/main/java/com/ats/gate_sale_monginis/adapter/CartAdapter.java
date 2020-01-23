@@ -115,7 +115,7 @@ public class CartAdapter extends BaseAdapter {
         Picasso.with(context)
                 .load(imagePath)
                 .placeholder(android.R.color.transparent)
-                .error(R.drawable.no_image)
+                .error(R.drawable.logo)
                 .into(holder.ivImage);
 
 

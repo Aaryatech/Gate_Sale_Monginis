@@ -18,6 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -26,7 +29,9 @@ import android.widget.Toast;
 
 import com.ats.gate_sale_monginis.R;
 import com.ats.gate_sale_monginis.adapter.PendingBillListAdapter;
+import com.ats.gate_sale_monginis.adapter.RejectedBillListAdapter;
 import com.ats.gate_sale_monginis.bean.BillHeaderListData;
+import com.ats.gate_sale_monginis.bean.ErrorMessage;
 import com.ats.gate_sale_monginis.bean.LoginData;
 import com.ats.gate_sale_monginis.common.CommonDialog;
 import com.ats.gate_sale_monginis.constants.Constants;
@@ -46,7 +51,11 @@ import static android.content.Context.MODE_PRIVATE;
 public class RejectedBillsFragment extends Fragment implements RejectedBillInterface {
 
     private ListView lvList;
-    PendingBillListAdapter adapter;
+    private CheckBox checkBox;
+    private Button btnDelete;
+
+    RejectedBillListAdapter adapter;
+    PendingBillListAdapter pendingAdapter;
 
     private ArrayList<BillHeaderListData> billData = new ArrayList<>();
 
@@ -61,6 +70,8 @@ public class RejectedBillsFragment extends Fragment implements RejectedBillInter
         View view = inflater.inflate(R.layout.fragment_rejected_bills, container, false);
 
         lvList = view.findViewById(R.id.lvRejectedList);
+        checkBox = view.findViewById(R.id.checkbox);
+        btnDelete = view.findViewById(R.id.btnDelete);
 
         SharedPreferences pref = getContext().getSharedPreferences(Constants.MY_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
@@ -83,9 +94,9 @@ public class RejectedBillsFragment extends Fragment implements RejectedBillInter
 
         Calendar yesterday = Calendar.getInstance();
         yesterday.add(Calendar.DATE, -1);
-        String fromDate = sdf_From.format(yesterday.getTimeInMillis());
+        final String fromDate = sdf_From.format(yesterday.getTimeInMillis());
 
-        String toDate = sdf_From.format(Calendar.getInstance().getTimeInMillis());
+        final String toDate = sdf_From.format(Calendar.getInstance().getTimeInMillis());
 
         if (userType == 1) {
             getInitiatorBillList(fromDate, toDate, 3, userId);
@@ -94,6 +105,50 @@ public class RejectedBillsFragment extends Fragment implements RejectedBillInter
         } else {
             getBillList(fromDate, toDate, 3, 0, 0, 0);
         }
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    if (billData.size() > 0) {
+                        for (int i = 0; i < billData.size(); i++) {
+                            billData.get(i).setRejected(true);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                if (billData.size() > 0) {
+                    ArrayList<Integer> idArray = new ArrayList<>();
+
+                    for (int i = 0; i < billData.size(); i++) {
+                        if (billData.get(i).isRejected()) {
+                            idArray.add(billData.get(i).getBillId());
+                        }
+                    }
+
+                    if (idArray.size() == 0) {
+                        Toast.makeText(getContext(), "Please select bills to delete", Toast.LENGTH_SHORT).show();
+                    } else {
+                        deleteRejectedBill(idArray, fromDate, toDate);
+                    }
+
+                    Log.e("Bill ID Array : ", "-----------------" + idArray);
+                    Log.e("Bill Array Size : ", "----------------" + billData.size());
+                    Log.e("Bill ID Array Size : ", "----------------" + idArray.size());
+                } else {
+                    Toast.makeText(getContext(), "No rejected bills found", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
         return view;
     }
@@ -118,8 +173,17 @@ public class RejectedBillsFragment extends Fragment implements RejectedBillInter
                             billData.clear();
                             billData = data;
 
-                            adapter = new PendingBillListAdapter(getContext(), billData, 3);
-                            lvList.setAdapter(adapter);
+                            for (int i = 0; i < billData.size(); i++) {
+                                billData.get(i).setRejected(false);
+                            }
+
+                            if (userType == 3) {
+                                adapter = new RejectedBillListAdapter(getContext(), billData, 3);
+                                lvList.setAdapter(adapter);
+                            } else {
+                                pendingAdapter = new PendingBillListAdapter(getContext(), billData, 3);
+                                lvList.setAdapter(pendingAdapter);
+                            }
 
                         } else {
                             commonDialog.dismiss();
@@ -142,7 +206,6 @@ public class RejectedBillsFragment extends Fragment implements RejectedBillInter
             });
         } else {
             Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-
         }
     }
 
@@ -166,8 +229,8 @@ public class RejectedBillsFragment extends Fragment implements RejectedBillInter
                             billData.clear();
                             billData = data;
 
-                            adapter = new PendingBillListAdapter(getContext(), billData, 3);
-                            lvList.setAdapter(adapter);
+                            pendingAdapter = new PendingBillListAdapter(getContext(), billData, 3);
+                            lvList.setAdapter(pendingAdapter);
 
                         } else {
                             commonDialog.dismiss();
@@ -391,6 +454,57 @@ public class RejectedBillsFragment extends Fragment implements RejectedBillInter
                 toDateMillis = calendar.getTimeInMillis();
             }
         };
+    }
+
+
+    public void deleteRejectedBill(ArrayList<Integer> billIdArray, final String fromDate, final String toDate) {
+        if (Constants.isOnline(getContext())) {
+
+            final CommonDialog commonDialog = new CommonDialog(getContext(), "Loading", "Please Wait...");
+            commonDialog.show();
+
+
+            Call<ErrorMessage> messageCall = Constants.myInterface.deleteRejectedBill(billIdArray);
+            messageCall.enqueue(new Callback<ErrorMessage>() {
+                @Override
+                public void onResponse(Call<ErrorMessage> call, Response<ErrorMessage> response) {
+                    try {
+                        if (response.body() != null) {
+                            ErrorMessage data = response.body();
+
+                            if (data.getError()) {
+                                commonDialog.dismiss();
+                                Toast.makeText(getActivity(), "Unable To Process", Toast.LENGTH_SHORT).show();
+                            } else {
+                                commonDialog.dismiss();
+                                Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                                getBillList(fromDate, toDate, 3, 0, 0, 0);
+                                checkBox.setChecked(false);
+                            }
+
+
+                        } else {
+                            commonDialog.dismiss();
+                            Toast.makeText(getActivity(), "Unable To Process", Toast.LENGTH_SHORT).show();
+
+                        }
+                    } catch (Exception e) {
+                        commonDialog.dismiss();
+                        Toast.makeText(getActivity(), "Unable To Process", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ErrorMessage> call, Throwable t) {
+                    commonDialog.dismiss();
+                    Toast.makeText(getActivity(), "Unable To Process", Toast.LENGTH_SHORT).show();
+                    t.printStackTrace();
+                }
+            });
+        } else {
+            Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

@@ -203,16 +203,13 @@ public class PendingBillListAdapter extends BaseAdapter {
             holder.lvBillItems.setAdapter(adapter);
 
             setListViewHeightBasedOnChildren(holder.lvBillItems);
-            // Log.e("Bill Items : ", "--------------" + itemArray);
         }
 
 
         holder.tvPrintIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 try {
-
                     HomeActivity activity = (HomeActivity) context;
 
                     Gson gson = new Gson();
@@ -222,57 +219,11 @@ public class PendingBillListAdapter extends BaseAdapter {
                     intent.putExtra("Bean",bean);
                     context.startActivity(intent);
 
-//                    PrintHelper printHelper = new PrintHelper(activity, ip, 9, displayedValues.get(position));
-//                    printHelper.runPrintReceiptSequence();
                 } catch (Exception e) {
                 }
 
-               /* AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
-                builder.setTitle("Confirm Action");
-                builder.setMessage("Do You Want To Generate Bill?");
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        try {
-                            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/GateSaleApp";
-                            dir = new File(path);
-                            if (!dir.exists()) {
-                                dir.mkdirs();
-                            }
-                            createPDF(displayedValues.get(position).getCustName(), "", displayedValues.get(position));
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (DocumentException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();*/
-
-
             }
         });
-
-
-     /*   holder.llBillHead.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (holder.lvBillItems.getVisibility() == View.VISIBLE) {
-                    holder.lvBillItems.setVisibility(View.GONE);
-                } else if (holder.lvBillItems.getVisibility() == View.GONE) {
-                    holder.lvBillItems.setVisibility(View.VISIBLE);
-                }
-            }
-        });*/
-
 
         return rowView;
     }

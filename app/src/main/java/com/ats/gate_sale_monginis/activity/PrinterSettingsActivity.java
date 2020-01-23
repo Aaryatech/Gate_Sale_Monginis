@@ -62,7 +62,7 @@ public class PrinterSettingsActivity extends AppCompatActivity implements OnClic
         btnAdvance = findViewById(R.id.btnAdvance);
 
         try {
-            SharedPreferences pref = getSharedPreferences(Constants.MY_PREF, MODE_PRIVATE);
+            SharedPreferences pref = getSharedPreferences(Constants.PRINTER_PREF, MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
             String ip = pref.getString("IP", "");
             edIP.setText(ip);
@@ -95,7 +95,7 @@ public class PrinterSettingsActivity extends AppCompatActivity implements OnClic
                 Toast.makeText(this, "Please Insert Port Number", Toast.LENGTH_SHORT).show();
                 edPort.requestFocus();
             } else {
-                SharedPreferences pref = getSharedPreferences(Constants.MY_PREF, MODE_PRIVATE);
+                SharedPreferences pref = getSharedPreferences(Constants.PRINTER_PREF, MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
 
                 String ip = edIP.getText().toString();
@@ -180,6 +180,7 @@ public class PrinterSettingsActivity extends AppCompatActivity implements OnClic
 
             @Override
             public void run() {
+                Log.e("OnOpen", "-----Connected");
                 Toast.makeText(mActivity, "Success", Toast.LENGTH_SHORT).show();
             }
         });
@@ -192,6 +193,7 @@ public class PrinterSettingsActivity extends AppCompatActivity implements OnClic
 
             @Override
             public void run() {
+                Log.e("OnOpenFailed", "-----Not Connected");
                 Toast.makeText(mActivity, "Failed", Toast.LENGTH_SHORT).show();
             }
         });
@@ -204,6 +206,7 @@ public class PrinterSettingsActivity extends AppCompatActivity implements OnClic
 
             @Override
             public void run() {
+                Log.e("OnClose", "-----Connection Closed");
                 Toast.makeText(mActivity, "Closed", Toast.LENGTH_SHORT).show();
             }
         });

@@ -129,7 +129,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         Gson gson = new Gson();
         String json2 = pref.getString("loginData", "");
         LoginData userBean = gson.fromJson(json2, LoginData.class);
-        Log.e("User Bean : ", "---------------" + userBean);
+        Log.e("User Bean : ", "--------***-------" + userBean);
         try {
             if (userBean != null) {
                 userId = userBean.getUserId();
@@ -917,10 +917,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             map.put(displayedValues.get(position).getBillId(), false);
                             if (displayedValues.get(position).getIsOther() == 0) {
                                 selectedIdArray.remove(displayedValues.get(position));
-                               // cbRegularAll.setChecked(false);
+                                // cbRegularAll.setChecked(false);
                             } else {
                                 selectedIdArrayOther.remove(displayedValues.get(position));
-                               // cbOtherAll.setChecked(false);
+                                // cbOtherAll.setChecked(false);
                             }
 
                             ArrayList<BillHeaderListData> finalArray = new ArrayList<>();
