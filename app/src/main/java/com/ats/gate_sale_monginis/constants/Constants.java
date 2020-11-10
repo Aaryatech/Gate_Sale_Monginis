@@ -1,7 +1,6 @@
 package com.ats.gate_sale_monginis.constants;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
@@ -27,7 +26,7 @@ public class Constants {
     public static final String MY_PREF = "GateSale";
     public static final String PRINTER_PREF = "Printer";
 
-    public static final String IMAGE_PATH = "http://132.148.151.41:8080/uploads/ITEM/";
+    public static final String IMAGE_PATH = "http://107.180.95.11:8080/uploads/ITEM/";
 
     public static int nPrintWidth = 384;
     public static boolean bCutter = true;
@@ -59,7 +58,7 @@ public class Constants {
 
     public static Retrofit retrofit = new Retrofit.Builder()
             //.baseUrl("http://192.168.2.16:8091/")
-            .baseUrl("http://132.148.151.41:8080/webapi/")
+            .baseUrl("http://107.180.95.11:8080/webapi/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create()).build();
 
