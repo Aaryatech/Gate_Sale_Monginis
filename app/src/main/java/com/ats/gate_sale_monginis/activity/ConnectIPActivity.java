@@ -2,6 +2,7 @@ package com.ats.gate_sale_monginis.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,8 +13,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ats.gate_sale_monginis.R;
+import com.ats.gate_sale_monginis.bean.LoginData;
 import com.ats.gate_sale_monginis.constants.Constants;
+import com.ats.gate_sale_monginis.util.NewPrintHelper;
+import com.ats.gate_sale_monginis.util.PrintReceiptType;
 import com.ats.gate_sale_monginis.util.Prints;
+import com.google.gson.Gson;
 import com.lvrenyang.io.NETPrinting;
 import com.lvrenyang.io.Pos;
 import com.lvrenyang.io.base.IOCallBack;
@@ -29,8 +34,8 @@ public class ConnectIPActivity extends Activity implements OnClickListener, IOCa
     Pos mPos = new Pos();
     NETPrinting mNet = new NETPrinting();
 
-    EditText inputIp, inputPort;
-    Button btnConnect, btnDisconnect, btnPrint;
+    EditText inputIp, inputPort,edIp;
+    Button btnConnect, btnDisconnect, btnPrint,btnSave,btnTestPrint;
 
     ConnectIPActivity mActivity;
 
@@ -46,10 +51,15 @@ public class ConnectIPActivity extends Activity implements OnClickListener, IOCa
         btnPrint = (Button) findViewById(R.id.buttonPrint);
         inputIp = (EditText) findViewById(R.id.editTextInputIp);
         inputPort = (EditText) findViewById(R.id.editTextInputPort);
+        edIp = (EditText) findViewById(R.id.edIp);
+        btnSave = (Button) findViewById(R.id.btnSave);
+        btnTestPrint = (Button) findViewById(R.id.btnPrint);
 
         btnConnect.setOnClickListener(this);
         btnDisconnect.setOnClickListener(this);
         btnPrint.setOnClickListener(this);
+        btnSave.setOnClickListener(this);
+        btnTestPrint.setOnClickListener(this);
 
         inputIp.setText("192.168.1.19");
         inputPort.setText("9100");
@@ -61,6 +71,17 @@ public class ConnectIPActivity extends Activity implements OnClickListener, IOCa
         mNet.SetCallBack(this);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
+        SharedPreferences pref = getSharedPreferences(Constants.PRINTER_PREF, MODE_PRIVATE);
+        String printIp = pref.getString(Constants.PRINTER_IP, "");
+        if (printIp != null) {
+            edIp.setText(printIp);
+        }
+
+
+
+
     }
 
     @Override
@@ -111,6 +132,38 @@ public class ConnectIPActivity extends Activity implements OnClickListener, IOCa
                 btnPrint.setEnabled(false);
                 es.submit(new TaskPrint(mPos));
                 break;
+
+
+            case  R.id.btnSave:
+                String printId = edIp.getText().toString();
+
+                if (printId.isEmpty()) {
+                    Toast.makeText(ConnectIPActivity.this, "Please enter Printer IP Address", Toast.LENGTH_SHORT).show();
+                    edIp.setError("required");
+                } else {
+                    edIp.setError(null);
+
+                    String printerIPTCP = "TCP:" + printId;
+
+                    SharedPreferences pref = getApplicationContext().getSharedPreferences(Constants.PRINTER_PREF, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString(Constants.PRINTER_IP, printerIPTCP);
+                    editor.apply();
+
+                    Toast.makeText(ConnectIPActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                }
+
+
+            case R.id.btnPrint:
+                try {
+
+                    SharedPreferences pref = getSharedPreferences(Constants.PRINTER_PREF, MODE_PRIVATE);
+                    String printIp = pref.getString(Constants.PRINTER_IP, "");
+
+                    NewPrintHelper printHelper = new NewPrintHelper(ConnectIPActivity.this, printIp, PrintReceiptType.TEST);
+                    printHelper.runPrintReceiptSequence();
+                } catch (Exception e) {
+                }
 
         }
     }

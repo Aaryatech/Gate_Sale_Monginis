@@ -13,7 +13,9 @@ import android.widget.Toast;
 import com.ats.gate_sale_monginis.R;
 import com.ats.gate_sale_monginis.bean.BillHeaderListData;
 import com.ats.gate_sale_monginis.constants.Constants;
+import com.ats.gate_sale_monginis.util.NewPrintHelper;
 import com.ats.gate_sale_monginis.util.PermissionUtil;
+import com.ats.gate_sale_monginis.util.PrintReceiptType;
 import com.ats.gate_sale_monginis.util.Prints;
 import com.google.gson.Gson;
 import com.lvrenyang.io.NETPrinting;
@@ -53,7 +55,7 @@ public class PrintReceiptActivity extends AppCompatActivity implements IOCallBac
 
         try {
             SharedPreferences pref = getSharedPreferences(Constants.PRINTER_PREF, MODE_PRIVATE);
-            ip = pref.getString("IP", "");
+            ip = pref.getString(Constants.PRINTER_IP, "");
             port = pref.getInt("Port", 9100);
 
         } catch (Exception e) {
@@ -85,7 +87,15 @@ public class PrintReceiptActivity extends AppCompatActivity implements IOCallBac
         btnPrint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                es.submit(new TaskOpen(mNet, ip, port, mActivity));
+
+                try {
+                    NewPrintHelper printHelper = new NewPrintHelper(PrintReceiptActivity.this, ip, billHeaderListData, PrintReceiptType.RECEIPT);
+                    printHelper.runPrintReceiptSequence();
+
+                } catch (Exception e) {
+                }
+
+                // es.submit(new TaskOpen(mNet, ip, port, mActivity));
             }
         });
 

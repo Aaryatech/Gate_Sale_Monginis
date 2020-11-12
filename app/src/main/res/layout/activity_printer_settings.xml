@@ -32,6 +32,7 @@
         android:singleLine="true" />
 
     <EditText
+        android:visibility="gone"
         android:id="@+id/edPort"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

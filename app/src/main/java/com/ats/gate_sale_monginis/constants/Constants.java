@@ -25,6 +25,7 @@ public class Constants {
 
     public static final String MY_PREF = "GateSale";
     public static final String PRINTER_PREF = "Printer";
+    public static final String PRINTER_IP = "Printer";
 
     public static final String IMAGE_PATH = "http://107.180.95.11:8080/uploads/ITEM/";
 

@@ -18,7 +18,9 @@ import android.view.View.OnClickListener;
 
 import com.ats.gate_sale_monginis.R;
 import com.ats.gate_sale_monginis.constants.Constants;
+import com.ats.gate_sale_monginis.util.NewPrintHelper;
 import com.ats.gate_sale_monginis.util.PermissionUtil;
+import com.ats.gate_sale_monginis.util.PrintReceiptType;
 import com.ats.gate_sale_monginis.util.Prints;
 import com.lvrenyang.io.NETPrinting;
 import com.lvrenyang.io.Pos;
@@ -64,7 +66,7 @@ public class PrinterSettingsActivity extends AppCompatActivity implements OnClic
         try {
             SharedPreferences pref = getSharedPreferences(Constants.PRINTER_PREF, MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
-            String ip = pref.getString("IP", "");
+            String ip = pref.getString(Constants.PRINTER_IP, "");
             edIP.setText(ip);
         } catch (Exception e) {
         }
@@ -88,36 +90,55 @@ public class PrinterSettingsActivity extends AppCompatActivity implements OnClic
             if (edIP.getText().toString().isEmpty()) {
                 Toast.makeText(this, "Please Insert Printer IP Address", Toast.LENGTH_SHORT).show();
                 edIP.requestFocus();
-            } else if (!validate(edIP.getText().toString())) {
+            }
+            /*else if (!validate(edIP.getText().toString())) {
                 Toast.makeText(this, "Invalid IP Address", Toast.LENGTH_SHORT).show();
                 edIP.requestFocus();
-            } else if (edPort.getText().toString().isEmpty()) {
+            }*/
+            /*else if (edPort.getText().toString().isEmpty()) {
                 Toast.makeText(this, "Please Insert Port Number", Toast.LENGTH_SHORT).show();
                 edPort.requestFocus();
-            } else {
+            }*/
+            else {
                 SharedPreferences pref = getSharedPreferences(Constants.PRINTER_PREF, MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
 
                 String ip = edIP.getText().toString();
                 int port = Integer.parseInt(edPort.getText().toString());
 
-                editor.putString("IP", ip);
+                String printerIPTCP = "TCP:" + ip;
+
+                editor.putString(Constants.PRINTER_IP, printerIPTCP);
                 editor.putInt("Port", port);
                 editor.apply();
 
-                Toast.makeText(this, "Connecting...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PrinterSettingsActivity.this, "Success", Toast.LENGTH_SHORT).show();
                 Log.e("IP ADDRESS", "-------------------" + ip);
                 Log.e("PORT: ", "-------------------" + port);
-                es.submit(new TaskOpen(mNet, ip, port, mActivity));
+               // es.submit(new TaskOpen(mNet, ip, port, mActivity));
 
             }
 
 
         } else if (view.getId() == R.id.btnPrinterTest) {
-            try {
+
+            /*try {
                 es.submit(new TaskPrint(mPos));
             } catch (Exception e) {
+            }*/
+
+
+            try {
+
+                SharedPreferences pref = getSharedPreferences(Constants.PRINTER_PREF, MODE_PRIVATE);
+                String printIp = pref.getString(Constants.PRINTER_IP, "");
+
+                NewPrintHelper printHelper = new NewPrintHelper(PrinterSettingsActivity.this, printIp, PrintReceiptType.TEST);
+                printHelper.runPrintReceiptSequence();
+            } catch (Exception e) {
             }
+
+
         } else if (view.getId() == R.id.btnAdvance) {
             startActivity(new Intent(PrinterSettingsActivity.this, ConnectIPActivity.class));
         }

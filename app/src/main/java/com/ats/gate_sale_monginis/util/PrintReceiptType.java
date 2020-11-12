@@ -5,7 +5,6 @@ package com.ats.gate_sale_monginis.util;
  */
 public interface PrintReceiptType
 {
-    int BILL=0;
-    int KOT=1;
+    int RECEIPT=1;
     int TEST=2;
 }
